@@ -29,7 +29,12 @@ class Sim:
             display.set_caption("Simulation")
             self.screen.fill("#FFFFFFFF")
             if is_x:
-                x = live_transmission()
+                res = live_transmission()
+                print(res)
+                if res > 0.35 and x <= 1:
+                    x += 0.01
+                elif res <= 0.35 and x >= -1:
+                    x -= 0.01
                 is_x = False
             else:
                 is_x = True

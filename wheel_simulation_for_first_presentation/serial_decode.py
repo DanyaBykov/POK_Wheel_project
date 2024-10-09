@@ -1,7 +1,8 @@
 import serial
 
 # this port address is for the serial tx/rx pins on the GPIO header
-SERIAL_PORT = '/dev/tty.usbmodem1101'
+#SERIAL_PORT = '/dev/tty.usbmodem1101'
+SERIAL_PORT = 'COM6'
 # be sure to set this to the same rate used on the Arduino
 SERIAL_RATE = 115200
 
@@ -12,6 +13,7 @@ def bytes_to_int(bytes):
         result = result * 256 + int(b)
 
     return result
+
 dataset_x = []
 dataset_y = []
 
@@ -32,7 +34,7 @@ def main():
         else:
             dataset_y.append(res)
             flag = True
-        
+
         if len(dataset_x) == 5000:
             break
 
@@ -71,6 +73,15 @@ def normalise_data():
         for item in data_y:
             f.write("%s\n" % item)
 
+MIN_X = 859257098
+MAX_X = 3065945410623553420156766599178
+
+def live_transmission():
+    ser = serial.Serial(SERIAL_PORT, SERIAL_RATE, bytesize=8, parity=serial.PARITY_NONE)
+    reading = ser.readline()
+    res = bytes_to_int(reading)
+    res = (res - MIN_X) / (MAX_X - MIN_X)
+    return res
+
 if __name__ == "__main__":
-    # main()
-    normalise_data()
+    print(live_transmission())

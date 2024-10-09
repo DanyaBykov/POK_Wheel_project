@@ -4,6 +4,7 @@ This file is drawing a window for simuation
 
 import pygame
 from pygame import display, event, time, transform, image
+from serial_decode import live_transmission
 from wheel import Wheel
 
 class Sim:
@@ -23,9 +24,15 @@ class Sim:
         This method is responsible for running the simulation
         """
         x = 0 #імітація зміннох переданої від джойстика
+        is_x = True
         while self.running:
             display.set_caption("Simulation")
             self.screen.fill("#FFFFFFFF")
+            if is_x:
+                x = live_transmission()
+                is_x = False
+            else:
+                is_x = True
             self.screen.blit(self.background, (0, 0))
             self.wheel.functioning(self.screen, x)
             self.clock.tick(60)
@@ -34,13 +41,13 @@ class Sim:
                     self.running = False
 
             # ПОКи що поворот керма визначається натисканням/зажиманням стрілочок
-            keys=pygame.key.get_pressed()
-            if keys[pygame.K_RIGHT]:
-                if x <= 1:
-                    x += 0.01
-            if keys[pygame.K_LEFT]:
-                if x >= -1:
-                    x -= 0.01
+            # keys=pygame.key.get_pressed()
+            # if keys[pygame.K_RIGHT]:
+            #     if x <= 1:
+            #         x += 0.01
+            # if keys[pygame.K_LEFT]:
+            #     if x >= -1:
+            #         x -= 0.01
 
             display.update()
 
